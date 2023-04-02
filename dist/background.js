@@ -4,6 +4,8 @@ const FPS = 60;
 const PARTICLE_DENSITY = 80;
 const PARTICLE_VELOCITY_MIN = 25;
 const PARTICLE_VELOCITY_MAX = 60;
+const REPEL_DISTANCE = 150;
+const REPEL_FORCE = 500;
 const CENTER_ATTRACTION_FORCE = 100;
 const FRICTION = 2.5;
 const CONNECTION_DISTANCE = 125;
@@ -14,6 +16,7 @@ const CONNECTION_COLOR = '#00a000';
 const BACKGROUND_COLOR = '#000000';
 const canvas = document.getElementById('background-canvas');
 const ctx = canvas.getContext('2d');
+let mouse = new Vector2d(-1, -1);
 let particles = [];
 function init() {
     canvas.width = window.innerWidth;
@@ -57,6 +60,19 @@ function animate() {
     ctx.fillStyle = BACKGROUND_COLOR;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.closePath();
+    // Repel particles from the mouse
+    if (mouse != null) {
+        particles.forEach((particle) => {
+            mouse = mouse || new Vector2d();
+            let force = particle.pos.subtract(mouse);
+            let distance = force.getMagnitude();
+            if (distance > REPEL_DISTANCE) {
+                return;
+            }
+            force.setMagnitude(REPEL_FORCE * (1 - distance / REPEL_DISTANCE));
+            particle.applyForce(force);
+        });
+    }
     // Attract off-screen particles to the center
     particles.forEach((particle) => {
         if (!particle.wasSeen &&
@@ -90,6 +106,9 @@ function animate() {
         particle.draw(ctx);
     });
 }
+window.addEventListener('mousemove', (event) => {
+    mouse = new Vector2d(event.clientX, event.clientY);
+});
 init();
 setInterval(animate, 1000 / FPS);
 window.addEventListener('resize', init);
