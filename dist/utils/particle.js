@@ -29,6 +29,7 @@ export class Particle {
             this.constVelocity.setAngle(randomFromRange(0, 2 * Math.PI));
         }
         this.color = randomChoice(this.particle_style.colors);
+        this.wasSeen = false;
     }
     distanceTo(particle2) {
         return particle2.pos.subtract(this.pos).getMagnitude();
@@ -64,10 +65,6 @@ export class Particle {
         if (!this.bounding_box.contains(this.pos)) {
             this.tempVelocity = new Vector2d();
             this.randomize(true);
-            return true;
-        }
-        else {
-            return false;
         }
     }
     applyForce(force) {

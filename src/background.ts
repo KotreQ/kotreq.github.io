@@ -126,9 +126,7 @@ function animate() {
 
     // Update velocities and positions
     particles.forEach((particle) => {
-        if (particle.update()) {
-            particle.wasSeen = false;
-        }
+        particle.update();
     });
 
     // Draw connections between all particles

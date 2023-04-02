@@ -87,6 +87,8 @@ export class Particle {
         }
 
         this.color = randomChoice(this.particle_style.colors);
+
+        this.wasSeen = false;
     }
 
     distanceTo(particle2: Particle): number {
@@ -134,7 +136,7 @@ export class Particle {
         }
     }
 
-    update(): boolean {
+    update() {
         let currentTime = new Date().getTime();
         let deltaTime = (currentTime - this.lastUpdate) / 1000;
         this.lastUpdate = currentTime;
@@ -149,9 +151,6 @@ export class Particle {
         if (!this.bounding_box.contains(this.pos)) {
             this.tempVelocity = new Vector2d();
             this.randomize(true);
-            return true;
-        } else {
-            return false;
         }
     }
 
