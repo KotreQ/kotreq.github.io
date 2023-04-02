@@ -17,7 +17,6 @@ const canvas = document.getElementById('background-canvas');
 const BACKGROUND_COLOR = window
     .getComputedStyle(canvas)
     .getPropertyValue('background-color');
-console.log(BACKGROUND_COLOR);
 const ctx = canvas.getContext('2d');
 let mouse = new Vector2d(-1, -1);
 let particles = [];

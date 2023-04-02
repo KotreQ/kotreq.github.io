@@ -31,8 +31,6 @@ const BACKGROUND_COLOR = window
     .getComputedStyle(canvas)
     .getPropertyValue('background-color');
 
-console.log(BACKGROUND_COLOR);
-
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
 let mouse: Vector2d | null = new Vector2d(-1, -1);
