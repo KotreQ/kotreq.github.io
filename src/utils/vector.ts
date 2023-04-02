@@ -1,3 +1,9 @@
+export type boundingBox = {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+};
 export class Vector2d {
     x: number;
     y: number;
