@@ -1,4 +1,4 @@
-import { Vector2d } from './utils/vector.js';
+import { Vector2d, BoundingBox } from './utils/vector.js';
 import { Particle } from './utils/particle.js';
 const FPS = 60;
 const PARTICLE_DENSITY = 80;
@@ -37,12 +37,7 @@ function init() {
                 width: CONNECTION_WIDTH,
                 distance: CONNECTION_DISTANCE,
             },
-        }, {
-            x1: 0,
-            y1: 0,
-            x2: canvas.width - 1,
-            y2: canvas.height - 1,
-        }, {
+        }, new BoundingBox(0, 0, canvas.width - 1, canvas.height - 1), {
             velocity_range: {
                 min: PARTICLE_VELOCITY_MIN,
                 max: PARTICLE_VELOCITY_MAX,

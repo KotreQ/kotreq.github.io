@@ -1,9 +1,61 @@
-export type boundingBox = {
+import { randomFromRange, randomBool } from './random.js';
+
+export class BoundingBox {
     x1: number;
     x2: number;
     y1: number;
     y2: number;
-};
+    constructor(x1: number, y1: number, x2: number, y2: number) {
+        this.x1 = x1;
+        this.x2 = x2;
+        this.y1 = y1;
+        this.y2 = y2;
+    }
+
+    getWidth(): number {
+        return Math.abs(this.x2 - this.x1) + 1;
+    }
+
+    getHeight(): number {
+        return Math.abs(this.y2 - this.y1) + 1;
+    }
+
+    contains(pos: Vector2d): boolean {
+        return (
+            pos.x >= this.x1 &&
+            pos.x <= this.x2 &&
+            pos.y >= this.y1 &&
+            pos.y <= this.y2
+        );
+    }
+
+    randomPoint(): Vector2d {
+        return new Vector2d(
+            randomFromRange(this.x1, this.x2 + 1),
+            randomFromRange(this.y1, this.y2 + 1)
+        );
+    }
+
+    randomEdgePoint(): { point: Vector2d; edgeNum: number } {
+        const width = this.getWidth();
+        const height = this.getHeight();
+        const isHorizontalEdge = randomFromRange(0, width + height) < width;
+        const isLowEdge = randomBool();
+        let point = new Vector2d();
+        if (isHorizontalEdge) {
+            point.x = randomFromRange(this.x1, this.x2 + 1);
+            point.y = isLowEdge ? this.y1 : this.y2;
+        } else {
+            point.x = isLowEdge ? this.x1 : this.x2;
+            point.y = randomFromRange(this.y1, this.y2 + 1);
+        }
+        const edgeNum =
+            (isHorizontalEdge ? 1 : 0) +
+            (isHorizontalEdge != isLowEdge ? 2 : 0);
+        return { point, edgeNum: edgeNum };
+    }
+}
+
 export class Vector2d {
     x: number;
     y: number;

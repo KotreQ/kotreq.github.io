@@ -1,10 +1,5 @@
-import { boundingBox, Vector2d } from './vector.js';
-import {
-    randomFromRange,
-    randomChoice,
-    randomPoint,
-    randomEdgePoint,
-} from './random.js';
+import { BoundingBox, Vector2d } from './vector.js';
+import { randomFromRange, randomChoice } from './random.js';
 import { toHex, lerp } from './math.js';
 
 export type ParticleStyle = {
@@ -28,7 +23,7 @@ export class Particle {
     connections_style: ConnectionsStyle;
     velocity_range: NumberRange;
     friction: number;
-    bounding_box: boundingBox;
+    bounding_box: BoundingBox;
 
     pos: Vector2d;
     color: string;
@@ -41,7 +36,7 @@ export class Particle {
 
     constructor(
         style: { particle: ParticleStyle; connections: ConnectionsStyle },
-        bounding_box: boundingBox,
+        bounding_box: BoundingBox,
         physics_config: {
             velocity_range: NumberRange;
             friction: number;
@@ -56,12 +51,12 @@ export class Particle {
 
         let additional_distance =
             this.particle_style.radius + this.connections_style.distance;
-        this.bounding_box = {
-            x1: bounding_box.x1 - additional_distance,
-            y1: bounding_box.y1 - additional_distance,
-            x2: bounding_box.x2 + additional_distance,
-            y2: bounding_box.y2 + additional_distance,
-        };
+        this.bounding_box = new BoundingBox(
+            bounding_box.x1 - additional_distance,
+            bounding_box.y1 - additional_distance,
+            bounding_box.x2 + additional_distance,
+            bounding_box.y2 + additional_distance
+        );
 
         this.pos = new Vector2d();
         this.color = '#000000';
@@ -81,13 +76,13 @@ export class Particle {
         );
 
         if (spawnOnEdge) {
-            let { point, edgeNum } = randomEdgePoint(this.bounding_box);
+            let { point, edgeNum } = this.bounding_box.randomEdgePoint();
             this.pos = point;
             this.constVelocity.setAngle(
                 (randomFromRange(edgeNum - 1, edgeNum + 1) / 2) * Math.PI
             );
         } else {
-            this.pos = randomPoint(this.bounding_box);
+            this.pos = this.bounding_box.randomPoint();
             this.constVelocity.setAngle(randomFromRange(0, 2 * Math.PI));
         }
 
@@ -151,12 +146,7 @@ export class Particle {
             1 + deltaTime * this.friction
         );
 
-        if (
-            this.pos.x < this.bounding_box.x1 ||
-            this.pos.x > this.bounding_box.x2 ||
-            this.pos.y < this.bounding_box.y1 ||
-            this.pos.y > this.bounding_box.y2
-        ) {
+        if (!this.bounding_box.contains(this.pos)) {
             this.tempVelocity = new Vector2d();
             this.randomize(true);
             return true;
