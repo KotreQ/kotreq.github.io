@@ -19,6 +19,7 @@ export type NumberRange = {
 };
 
 export class Particle {
+    drawing_ctx: CanvasRenderingContext2D;
     particle_style: ParticleStyle;
     connections_style: ConnectionsStyle;
     velocity_range: NumberRange;
@@ -35,6 +36,7 @@ export class Particle {
     wasSeen: boolean;
 
     constructor(
+        drawing_ctx: CanvasRenderingContext2D,
         style: { particle: ParticleStyle; connections: ConnectionsStyle },
         bounding_box: BoundingBox,
         physics_config: {
@@ -42,6 +44,8 @@ export class Particle {
             friction: number;
         }
     ) {
+        this.drawing_ctx = drawing_ctx;
+
         this.particle_style = style.particle;
         this.connections_style = style.connections;
 
@@ -95,25 +99,25 @@ export class Particle {
         return particle2.pos.subtract(this.pos).getMagnitude();
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
-        ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.arc(
+    draw() {
+        this.drawing_ctx.beginPath();
+        this.drawing_ctx.fillStyle = this.color;
+        this.drawing_ctx.arc(
             this.pos.x,
             this.pos.y,
             this.particle_style.radius,
             0,
             2 * Math.PI
         );
-        ctx.fill();
-        ctx.closePath();
+        this.drawing_ctx.fill();
+        this.drawing_ctx.closePath();
     }
 
-    drawConnTo(ctx: CanvasRenderingContext2D, particle2: Particle) {
+    drawConnTo(particle2: Particle) {
         let distance = this.distanceTo(particle2);
         if (distance <= this.connections_style.distance) {
-            ctx.beginPath();
-            ctx.strokeStyle =
+            this.drawing_ctx.beginPath();
+            this.drawing_ctx.strokeStyle =
                 this.connections_style.color +
                 toHex(
                     Math.floor(
@@ -128,11 +132,11 @@ export class Particle {
                     ),
                     2
                 );
-            ctx.lineWidth = this.connections_style.width;
-            ctx.moveTo(this.pos.x, this.pos.y);
-            ctx.lineTo(particle2.pos.x, particle2.pos.y);
-            ctx.stroke();
-            ctx.closePath();
+            this.drawing_ctx.lineWidth = this.connections_style.width;
+            this.drawing_ctx.moveTo(this.pos.x, this.pos.y);
+            this.drawing_ctx.lineTo(particle2.pos.x, particle2.pos.y);
+            this.drawing_ctx.stroke();
+            this.drawing_ctx.closePath();
         }
     }
 

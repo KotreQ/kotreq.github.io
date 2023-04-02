@@ -2,7 +2,8 @@ import { BoundingBox, Vector2d } from './vector.js';
 import { randomFromRange, randomChoice } from './random.js';
 import { toHex, lerp } from './math.js';
 export class Particle {
-    constructor(style, bounding_box, physics_config) {
+    constructor(drawing_ctx, style, bounding_box, physics_config) {
+        this.drawing_ctx = drawing_ctx;
         this.particle_style = style.particle;
         this.connections_style = style.connections;
         this.velocity_range = physics_config.velocity_range;
@@ -34,25 +35,25 @@ export class Particle {
     distanceTo(particle2) {
         return particle2.pos.subtract(this.pos).getMagnitude();
     }
-    draw(ctx) {
-        ctx.beginPath();
-        ctx.fillStyle = this.color;
-        ctx.arc(this.pos.x, this.pos.y, this.particle_style.radius, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.closePath();
+    draw() {
+        this.drawing_ctx.beginPath();
+        this.drawing_ctx.fillStyle = this.color;
+        this.drawing_ctx.arc(this.pos.x, this.pos.y, this.particle_style.radius, 0, 2 * Math.PI);
+        this.drawing_ctx.fill();
+        this.drawing_ctx.closePath();
     }
-    drawConnTo(ctx, particle2) {
+    drawConnTo(particle2) {
         let distance = this.distanceTo(particle2);
         if (distance <= this.connections_style.distance) {
-            ctx.beginPath();
-            ctx.strokeStyle =
+            this.drawing_ctx.beginPath();
+            this.drawing_ctx.strokeStyle =
                 this.connections_style.color +
                     toHex(Math.floor(lerp(256, 0, Math.pow(distance / this.connections_style.distance, 2))), 2);
-            ctx.lineWidth = this.connections_style.width;
-            ctx.moveTo(this.pos.x, this.pos.y);
-            ctx.lineTo(particle2.pos.x, particle2.pos.y);
-            ctx.stroke();
-            ctx.closePath();
+            this.drawing_ctx.lineWidth = this.connections_style.width;
+            this.drawing_ctx.moveTo(this.pos.x, this.pos.y);
+            this.drawing_ctx.lineTo(particle2.pos.x, particle2.pos.y);
+            this.drawing_ctx.stroke();
+            this.drawing_ctx.closePath();
         }
     }
     update() {

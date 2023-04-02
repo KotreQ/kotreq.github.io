@@ -49,6 +49,7 @@ function init() {
     while (particles.length < particle_count) {
         particles.push(
             new Particle(
+                ctx,
                 {
                     particle: {
                         colors: PARTICLE_COLORS,
@@ -132,13 +133,13 @@ function animate() {
     // Draw connections between all particles
     for (let i = 0; i < particles.length; i++) {
         for (let j = i + 1; j < particles.length; j++) {
-            particles[i].drawConnTo(ctx, particles[j]);
+            particles[i].drawConnTo(particles[j]);
         }
     }
 
     // Draw all particles
     particles.forEach((particle) => {
-        particle.draw(ctx);
+        particle.draw();
     });
 }
 
