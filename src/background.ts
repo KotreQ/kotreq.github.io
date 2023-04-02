@@ -23,11 +23,15 @@ const PARTICLE_COLORS = ['#00d000', '#00e000', '#00f000'];
 const CONNECTION_WIDTH = 3;
 const CONNECTION_COLOR = '#00a000';
 
-const BACKGROUND_COLOR = '#000000';
-
 const canvas = document.getElementById(
     'background-canvas'
 ) as HTMLCanvasElement;
+
+const BACKGROUND_COLOR = window
+    .getComputedStyle(canvas)
+    .getPropertyValue('background-color');
+
+console.log(BACKGROUND_COLOR);
 
 const ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
 
@@ -101,9 +105,7 @@ function animate() {
                 return;
             }
 
-            force.setMagnitude(
-                REPEL_FORCE * (1 - distance / REPEL_DISTANCE)
-            )
+            force.setMagnitude(REPEL_FORCE * (1 - distance / REPEL_DISTANCE));
 
             particle.applyForce(force);
         });
@@ -149,7 +151,7 @@ function animate() {
 
 window.addEventListener('mousemove', (event) => {
     mouse = new Vector2d(event.clientX, event.clientY);
-})
+});
 
 init();
 setInterval(animate, 1000 / FPS);

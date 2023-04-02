@@ -13,8 +13,11 @@ const PARTICLE_RADIUS = 4;
 const PARTICLE_COLORS = ['#00d000', '#00e000', '#00f000'];
 const CONNECTION_WIDTH = 3;
 const CONNECTION_COLOR = '#00a000';
-const BACKGROUND_COLOR = '#000000';
 const canvas = document.getElementById('background-canvas');
+const BACKGROUND_COLOR = window
+    .getComputedStyle(canvas)
+    .getPropertyValue('background-color');
+console.log(BACKGROUND_COLOR);
 const ctx = canvas.getContext('2d');
 let mouse = new Vector2d(-1, -1);
 let particles = [];
