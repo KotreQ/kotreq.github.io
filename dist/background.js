@@ -72,19 +72,18 @@ function animate() {
         });
     }
     // Attract off-screen particles to the center
+    let screen_bounds = new BoundingBox(0, 0, canvas.width - 1, canvas.height - 1);
     particles.forEach((particle) => {
-        if (!particle.wasSeen &&
-            (particle.pos.x < 0 ||
-                particle.pos.x > canvas.width - 1 ||
-                particle.pos.y < 0 ||
-                particle.pos.y > canvas.height - 1)) {
-            let center = new Vector2d(canvas.width / 2, canvas.height / 2);
-            let force = center.subtract(particle.pos);
-            force.setMagnitude(CENTER_ATTRACTION_FORCE);
-            particle.applyForce(force);
-        }
-        else if (!particle.wasSeen) {
-            particle.wasSeen = true;
+        if (!particle.wasSeen) {
+            if (screen_bounds.contains(particle.pos)) {
+                particle.wasSeen = true;
+            }
+            else {
+                let center = new Vector2d(canvas.width / 2, canvas.height / 2);
+                let force = center.subtract(particle.pos);
+                force.setMagnitude(CENTER_ATTRACTION_FORCE);
+                particle.applyForce(force);
+            }
         }
     });
     // Update velocities and positions
