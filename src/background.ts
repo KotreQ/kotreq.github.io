@@ -41,12 +41,12 @@ function init() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    let particle_count = Math.floor(
+    let particleCount = Math.floor(
         (canvas.width / 1000) * (canvas.height / 1000) * PARTICLE_DENSITY
     );
 
     // Add particles if there are too little
-    while (particles.length < particle_count) {
+    while (particles.length < particleCount) {
         particles.push(
             new Particle(
                 ctx,
@@ -63,7 +63,7 @@ function init() {
                 },
                 new BoundingBox(0, 0, canvas.width - 1, canvas.height - 1),
                 {
-                    velocity_range: {
+                    velocityRange: {
                         min: PARTICLE_VELOCITY_MIN,
                         max: PARTICLE_VELOCITY_MAX,
                     },
@@ -74,7 +74,7 @@ function init() {
     }
 
     // Remove particles if there are too much
-    while (particles.length > particle_count) {
+    while (particles.length > particleCount) {
         particles.shift();
     }
 
@@ -106,7 +106,7 @@ function animate() {
     }
 
     // Attract off-screen particles to the center
-    let screen_bounds = new BoundingBox(
+    let screenBounds = new BoundingBox(
         0,
         0,
         canvas.width - 1,
@@ -114,7 +114,7 @@ function animate() {
     );
     particles.forEach((particle) => {
         if (!particle.wasSeen) {
-            if (screen_bounds.contains(particle.pos)) {
+            if (screenBounds.contains(particle.pos)) {
                 particle.wasSeen = true;
             } else {
                 let center = new Vector2d(canvas.width / 2, canvas.height / 2);
