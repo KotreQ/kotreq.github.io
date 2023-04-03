@@ -19,20 +19,20 @@ export type NumberRange = {
 };
 
 export class Particle {
-    drawingCtx: CanvasRenderingContext2D;
-    particleStyle: ParticleStyle;
-    connectionsStyle: ConnectionsStyle;
-    velocityRange: NumberRange;
-    friction: number;
-    boundingRox: BoundingBox;
+    private drawingCtx: CanvasRenderingContext2D;
+    private particleStyle: ParticleStyle;
+    private connectionsStyle: ConnectionsStyle;
+    private velocityRange: NumberRange;
+    private friction: number;
+    private boundingRox: BoundingBox;
 
     pos: Vector2d;
-    color: string;
+    private color: string;
 
-    constVelocity: Vector2d;
-    tempVelocity: Vector2d;
+    private constVelocity: Vector2d;
+    private tempVelocity: Vector2d;
 
-    lastUpdate: number;
+    private lastUpdate: number;
     wasSeen: boolean;
 
     constructor(
