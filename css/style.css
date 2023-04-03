@@ -6,6 +6,10 @@
     z-index: -1;
 }
 
+.obfuscated {
+    font-family: 'Courier New', Courier, monospace;
+}
+
 body {
     background-color: #00000000;
     color: #ffffff;
