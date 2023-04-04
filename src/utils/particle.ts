@@ -145,6 +145,9 @@ export class Particle {
         let deltaTime = (currentTime - this.lastUpdate) / 1000;
         this.lastUpdate = currentTime;
 
+        // Limit deltaTime to 1 second
+        deltaTime = deltaTime > 1 ? 1 : deltaTime;
+
         this.pos = this.pos.add(this.constVelocity.multiply(deltaTime));
 
         this.pos = this.pos.add(this.tempVelocity.multiply(deltaTime));
