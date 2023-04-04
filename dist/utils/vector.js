@@ -25,19 +25,23 @@ export class BoundingBox {
         const width = this.getWidth();
         const height = this.getHeight();
         const isHorizontalEdge = randomFromRange(0, width + height) < width;
-        const isLowEdge = randomBool();
-        let point = new Vector2d();
-        if (isHorizontalEdge) {
-            point.x = randomFromRange(this.x1, this.x2 + 1);
-            point.y = isLowEdge ? this.y1 : this.y2;
+        const edgeNum = (randomBool() ? 2 : 0) + (isHorizontalEdge ? 1 : 0);
+        let point = this.randomPoint();
+        switch (edgeNum) {
+            case 0:
+                point.x = this.x1;
+                break;
+            case 1:
+                point.y = this.y1;
+                break;
+            case 2:
+                point.x = this.x2;
+                break;
+            case 3:
+                point.y = this.y2;
+                break;
         }
-        else {
-            point.x = isLowEdge ? this.x1 : this.x2;
-            point.y = randomFromRange(this.y1, this.y2 + 1);
-        }
-        const edgeNum = (isHorizontalEdge ? 1 : 0) +
-            (isHorizontalEdge != isLowEdge ? 2 : 0);
-        return { point, edgeNum: edgeNum };
+        return { point, edgeNum };
     }
 }
 export class Vector2d {
