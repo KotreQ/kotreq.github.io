@@ -81,6 +81,8 @@ function init() {
     particles.forEach((particle) => {
         particle.wasSeen = false;
     });
+
+    animate();
 }
 
 function animate() {
