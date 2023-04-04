@@ -60,6 +60,8 @@ export class Particle {
         let currentTime = new Date().getTime();
         let deltaTime = (currentTime - this.lastUpdate) / 1000;
         this.lastUpdate = currentTime;
+        // Limit deltaTime to 1 second
+        deltaTime = deltaTime > 1 ? 1 : deltaTime;
         this.pos = this.pos.add(this.constVelocity.multiply(deltaTime));
         this.pos = this.pos.add(this.tempVelocity.multiply(deltaTime));
         this.tempVelocity = this.tempVelocity.divide(1 + deltaTime * this.friction);
