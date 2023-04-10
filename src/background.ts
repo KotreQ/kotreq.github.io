@@ -38,9 +38,21 @@ let mouse: Vector2d | null = new Vector2d(-1, -1);
 let particles: Particle[] = [];
 
 function init() {
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    spawnParticles();
+    window.addEventListener('resize', spawnParticles);
+
+    setInterval(animate, 1000 / FPS);
+}
+
+function resizeCanvas() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+}
 
+function spawnParticles() {
     let particleCount = Math.floor(
         (canvas.width / 1000) * (canvas.height / 1000) * PARTICLE_DENSITY
     );
@@ -150,6 +162,3 @@ window.addEventListener('mousemove', (event) => {
 });
 
 init();
-setInterval(animate, 1000 / FPS);
-
-window.addEventListener('resize', init);
