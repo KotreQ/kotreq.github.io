@@ -10,36 +10,50 @@ const OBFUSCATED_CHARS =
 
 const OBFUSCATED_CLASS_NAME = 'obfuscated';
 
+interface ObfuscatedTextNode extends Text {
+    originalText: string | undefined;
+    textContent: string;
+}
+
 class ObfuscatedText {
-    private textObject: Text;
-    private text: string;
+    private text: ObfuscatedTextNode;
 
     constructor(textObject: Text) {
-        this.textObject = textObject;
-        this.text = textObject.textContent || '';
-        textObject.textContent = Array(this.text.length).fill(' ').join('');
+        this.text = textObject as ObfuscatedTextNode;
+        if (!this.text.originalText) {
+            this.text.originalText = textObject.textContent || '';
+        }
     }
 
     update() {
         let newString = '';
+        if (!this.text.originalText) {
+            return;
+        }
 
-        for (let i = 0; i < this.text.length; i++) {
+        let lengthDiff =
+            this.text.originalText.length - this.text.textContent.length;
+        if (lengthDiff > 0) {
+            this.text.textContent += ' '.repeat(lengthDiff);
+        } else if (lengthDiff < 0) {
+            this.text.originalText += this.text.textContent.slice(lengthDiff);
+        }
+
+        for (let i = 0; i < this.text.originalText.length; i++) {
             // Character should not be obfuscated
-            if (!OBFUSCATED_CHARS.includes(this.text[i])) {
-                newString += this.text[i];
+            if (!OBFUSCATED_CHARS.includes(this.text.originalText[i])) {
+                newString += this.text.originalText[i];
                 continue;
             }
 
-            this.textObject.textContent = this.textObject.textContent || '';
-
             // Right character is in place
-            if (this.textObject.textContent[i] == this.text[i]) {
+            if (this.text.textContent[i] == this.text.originalText[i]) {
                 if (Math.random() < RANDOM_OBFUSCATION_CHANCE) {
                     newString += randomChoice(
-                        OBFUSCATED_CHARS.replace(this.text[i], '')
+                        OBFUSCATED_CHARS.replace(this.text.originalText[i], '')
                     );
                 } else {
-                    newString += this.text[i];
+                    newString += this.text.originalText[i];
                 }
             }
 
@@ -47,18 +61,18 @@ class ObfuscatedText {
             else {
                 if (Math.random() < OBFUSCATION_RESOLVE_CHANCE) {
                     // Write correct character
-                    newString += this.text[i];
+                    newString += this.text.originalText[i];
                 } else {
                     // Write incorrect character
                     newString += randomChoice(
-                        OBFUSCATED_CHARS.replace(this.text[i], '')
+                        OBFUSCATED_CHARS.replace(this.text.originalText[i], '')
                     );
                 }
             }
         }
 
-        if (newString != this.textObject.textContent) {
-            this.textObject.textContent = newString;
+        if (newString != this.text.textContent) {
+            this.text.textContent = newString;
         }
     }
 }
@@ -79,7 +93,10 @@ function init() {
         let node = queue.pop();
         if (node instanceof Text) {
             obfuscatedTexts.push(new ObfuscatedText(node));
-        } else if (node instanceof Element && !node.classList.contains(OBFUSCATED_CLASS_NAME)) {
+        } else if (
+            node instanceof Element &&
+            !node.classList.contains(OBFUSCATED_CLASS_NAME)
+        ) {
             queue.push(...node.childNodes);
         }
     }
