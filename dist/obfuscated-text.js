@@ -11,6 +11,20 @@ class ObfuscatedText {
             this.text.originalText = textObject.textContent || '';
         }
     }
+    reset() {
+        this.text.textContent = this.text.originalText || '';
+        delete this.text.originalText;
+    }
+    isConnected() {
+        return this.text.isConnected;
+    }
+    isSameNode(node) {
+        return this.text.isSameNode(node);
+    }
+    hasParentWithClass(className) {
+        var _a;
+        return ((_a = this.text.parentElement) === null || _a === void 0 ? void 0 : _a.closest(`.${className}`)) != null;
+    }
     update() {
         let newString = '';
         if (!this.text.originalText) {
@@ -56,16 +70,29 @@ class ObfuscatedText {
     }
 }
 let obfuscatedTexts = [];
-function init() {
-    obfuscatedTexts = [];
+function refreshNodes() {
+    let removedTexts = [];
+    obfuscatedTexts = obfuscatedTexts.filter((obfuscatedText) => {
+        // If node removed
+        if (!obfuscatedText.hasParentWithClass(OBFUSCATED_CLASS_NAME) ||
+            !obfuscatedText.isConnected()) {
+            removedTexts.push(obfuscatedText);
+            return false;
+        }
+        return true;
+    });
+    removedTexts.forEach((removedText) => removedText.reset());
     let queue = [];
     Array.from(document.getElementsByClassName(OBFUSCATED_CLASS_NAME)).forEach((element) => {
         queue.push(...element.childNodes);
     });
     while (queue.length > 0) {
-        let node = queue.pop();
+        let node = queue[0];
+        queue.shift();
         if (node instanceof Text) {
-            obfuscatedTexts.push(new ObfuscatedText(node));
+            // Prevent duplicates
+            if (!obfuscatedTexts.some((obfuscatedText) => obfuscatedText.isSameNode(node)))
+                obfuscatedTexts.push(new ObfuscatedText(node));
         }
         else if (node instanceof Element &&
             !node.classList.contains(OBFUSCATED_CLASS_NAME)) {
@@ -78,5 +105,6 @@ function animate() {
         obfuscatedText.update();
     });
 }
-init();
+refreshNodes();
 setInterval(animate, 1000 / FPS);
+setInterval(refreshNodes, 1000);
