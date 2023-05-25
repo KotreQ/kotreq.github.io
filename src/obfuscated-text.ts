@@ -51,10 +51,15 @@ class ObfuscatedText {
         let lengthDiff =
             this.text.originalText.length - this.text.textContent.length;
         if (lengthDiff > 0) {
-            this.text.textContent += ' '.repeat(lengthDiff);
+            this.text.originalText = this.text.originalText.slice(
+                0,
+                -lengthDiff
+            );
         } else if (lengthDiff < 0) {
             this.text.originalText += this.text.textContent.slice(lengthDiff);
         }
+
+        if (lengthDiff) return;
 
         for (let i = 0; i < this.text.originalText.length; i++) {
             // Character should not be obfuscated
