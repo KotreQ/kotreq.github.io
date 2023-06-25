@@ -34,7 +34,7 @@ class ObfuscatedText {
         return this.text.isConnected;
     }
 
-    isSameNode(node: Node): unknown {
+    isSameNode(node: Node): boolean {
         return this.text.isSameNode(node);
     }
 
